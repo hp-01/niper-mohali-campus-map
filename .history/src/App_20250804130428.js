@@ -7,7 +7,7 @@ import './App.css';
 // Location settings
 const LOCATION_SEARCH_QUERY = "Niper SAS Nagar";
 const FALLBACK_COORDS = { lat: 30.6831522, lng: 76.729387 };
-// const LOCATION_ADDRESS = "बायपास, Sector 67, Sahibzada Ajit Singh Nagar, Punjab 160062";
+const LOCATION_ADDRESS = "बायपास, Sector 67, Sahibzada Ajit Singh Nagar, Punjab 160062";
 
 // Constants
 const MAP_CONTAINER_STYLE = { width: '100%', height: '100%' };

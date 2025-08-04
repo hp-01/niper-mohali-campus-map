@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "name": "Lodha Supremus - Main Building",
+    "description": "Main corporate office tower with multiple company offices.",
+    "paths": [
+      { "lat": 19.1179, "lng": 72.9060 },
+      { "lat": 19.1172, "lng": 72.9060 },
+      { "lat": 19.1172, "lng": 72.9068 },
+      { "lat": 19.1179, "lng": 72.9068 }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Visitor Parking Area",
+    "description": "Designated parking for guests and visitors near the main entrance.",
+    "paths": [
+      { "lat": 19.1182, "lng": 72.9070 },
+      { "lat": 19.1178, "lng": 72.9070 },
+      { "lat": 19.1178, "lng": 72.9075 },
+      { "lat": 19.1182, "lng": 72.9075 }
+    ]
+  }
+]

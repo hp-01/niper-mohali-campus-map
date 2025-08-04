@@ -5,9 +5,9 @@ import defaultAreas from './niper-areas.json';
 import './App.css';
 
 // Location settings
-const LOCATION_SEARCH_QUERY = "Niper SAS Nagar";
+const LOCATION_SEARCH_QUERY = "Lodha Supremus Powai";
 const FALLBACK_COORDS = { lat: 30.6831522, lng: 76.729387 };
-// const LOCATION_ADDRESS = "बायपास, Sector 67, Sahibzada Ajit Singh Nagar, Punjab 160062";
+const LOCATION_ADDRESS = "Saki Vihar Rd, Tunga Village, Chandivali, Powai, Mumbai, Maharashtra 400072";
 
 // Constants
 const MAP_CONTAINER_STYLE = { width: '100%', height: '100%' };

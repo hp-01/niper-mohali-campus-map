@@ -5,9 +5,9 @@ import defaultAreas from './niper-areas.json';
 import './App.css';
 
 // Location settings
-const LOCATION_SEARCH_QUERY = "Niper SAS Nagar";
-const FALLBACK_COORDS = { lat: 30.6831522, lng: 76.729387 };
-// const LOCATION_ADDRESS = "बायपास, Sector 67, Sahibzada Ajit Singh Nagar, Punjab 160062";
+const LOCATION_SEARCH_QUERY = "Lodha Supremus Powai";
+const FALLBACK_COORDS = { lat: 19.1175, lng: 72.9065 };
+const LOCATION_ADDRESS = "Saki Vihar Rd, Tunga Village, Chandivali, Powai, Mumbai, Maharashtra 400072";
 
 // Constants
 const MAP_CONTAINER_STYLE = { width: '100%', height: '100%' };
@@ -80,7 +80,7 @@ function App() {
       destination: destination,
       travelMode: window.google.maps.TravelMode.DRIVING,
     }, (result, status) => {
-      if (status === window.google.maps.DirectionsStatus.OK) { setDirections(result); }
+      if (status === window.google.maps.DirectionsStatus.OK) { setDirections(result); } 
       else { console.error(`Error fetching directions: ${status}`); alert("Could not calculate a route. The destination may be unreachable."); }
     });
   }, [userLocation, map]);
@@ -125,7 +125,7 @@ function App() {
       setActivePolygonId(polygonId);
     }
   }, [map, polygons]);
-
+  
   const onMapLoad = useCallback((mapInstance) => setMap(mapInstance), []);
 
   if (loadError) return <div>Error loading maps. Check API Key and ensure all 3 APIs are enabled.</div>;
@@ -143,12 +143,12 @@ function App() {
           <div className="admin-controls">
             {directions && <button onClick={() => setDirections(null)}>Clear Route</button>}
             {isAdminMode && <button className="clear-all-btn" onClick={() => {
-              if (window.confirm("This will delete all areas. Are you sure?")) {
-                setPolygons([]);
-                localStorage.removeItem('niper-mapped-areas');
-              }
+                if (window.confirm("This will delete all areas. Are you sure?")) {
+                    setPolygons([]);
+                    localStorage.removeItem('niper-mapped-areas');
+                }
             }}>Clear All</button>}
-            <label><input type="checkbox" checked={isAdminMode} onChange={() => setIsAdminMode(e => !e)} /> Admin Mode</label>
+            <label><input type="checkbox" checked={isAdminMode} onChange={() => setIsAdminMode(e => !e)}/> Admin Mode</label>
           </div>
         </header>
         <main className="map-container">
