@@ -313,7 +313,7 @@
   justify-content: center; /* Center the button horizontally */
 
   /* Spacing */
-  padding-bottom: 1rem; /* Give it some breathing room from the edge */
+  padding-bottom: 1.5rem; /* Give it some breathing room from the edge */
 
   /* This makes sure you can click through the container's empty space */
   pointer-events: none;
@@ -330,7 +330,7 @@
   color: white;
   border: none;
   border-radius: 8px;
-  padding: 12px 24px;
+  padding: 12px 12px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;

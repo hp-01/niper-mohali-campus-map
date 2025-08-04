@@ -313,7 +313,7 @@
   justify-content: center; /* Center the button horizontally */
 
   /* Spacing */
-  padding-bottom: 1rem; /* Give it some breathing room from the edge */
+  padding-bottom: 1.5rem; /* Give it some breathing room from the edge */
 
   /* This makes sure you can click through the container's empty space */
   pointer-events: none;
@@ -337,7 +337,6 @@
   transition: all 0.2s ease-in-out;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   width: 100%;
-  margin: 0 1rem;
 }
 
 .btn:hover {

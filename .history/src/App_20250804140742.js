@@ -7,6 +7,7 @@ import './App.css';
 // Location settings
 const LOCATION_SEARCH_QUERY = "Niper SAS Nagar";
 const FALLBACK_COORDS = { lat: 30.6831522, lng: 76.729387 };
+// const LOCATION_ADDRESS = "बायपास, Sector 67, Sahibzada Ajit Singh Nagar, Punjab 160062";
 
 // Constants
 const MAP_CONTAINER_STYLE = { width: '100%', height: '100%' };
@@ -17,15 +18,12 @@ function App() {
   const [isAdminMode, setIsAdminMode] = useState(false);
   const [polygons, setPolygons] = useState([]);
   const [activePolygonId, setActivePolygonId] = useState(null);
-  const [activePolygon, setActivePolygon] = useState(null);
   const [map, setMap] = useState(null);
   const [mapCenter, setMapCenter] = useState(FALLBACK_COORDS);
   const [searchTerm, setSearchTerm] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [userLocation, setUserLocation] = useState(null);
   const [directions, setDirections] = useState(null);
-
-  // --- DATA & SETUP EFFECTS ---
 
   useEffect(() => {
     const savedPolygons = localStorage.getItem('niper-mapped-areas');
@@ -38,26 +36,23 @@ function App() {
     service.textSearch({ query: LOCATION_SEARCH_QUERY }, (results, status) => {
       if (status === window.google.maps.places.PlacesServiceStatus.OK && results?.[0]) {
         const newCenter = { lat: results[0].geometry.location.lat(), lng: results[0].geometry.location.lng() };
-        setMapCenter(newCenter);
-        map.panTo(newCenter);
+        setMapCenter(newCenter); map.panTo(newCenter);
       }
     });
   }, [map]);
 
-  // Passive attempt to get user location on load without prompting
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => setUserLocation({ lat: position.coords.latitude, lng: position.coords.longitude }),
-        (error) => console.warn("Could not get user location on initial load. Will ask on navigation attempt.", error.message)
+        () => console.error("User denied geolocation.")
       );
     }
   }, []);
 
   useEffect(() => {
     const handleResize = () => setIsSidebarOpen(window.innerWidth > 768);
-    window.addEventListener('resize', handleResize);
-    handleResize();
+    window.addEventListener('resize', handleResize); handleResize();
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
@@ -75,66 +70,20 @@ function App() {
     };
   }, [isLoaded]);
 
-  // --- CORE LOGIC CALLBACKS ---
-
-  /**
-   * NEW: A promise-based helper to request the user's location.
-   */
-  const requestUserLocation = useCallback(() => {
-    return new Promise((resolve, reject) => {
-      if (!navigator.geolocation) {
-        reject(new Error("Geolocation is not supported by this browser."));
-        return;
-      }
-      navigator.geolocation.getCurrentPosition(
-        (position) => resolve({ lat: position.coords.latitude, lng: position.coords.longitude }),
-        (error) => reject(error) // The error object contains a 'code' and 'message'
-      );
-    });
-  }, []);
-
-  /**
-   * UPDATED: Navigation logic now interactively asks for permission.
-   */
-  const handleNavigation = useCallback(async (destination) => {
-    let currentLocation = userLocation;
-
-    // If we don't have the location, ask for it now.
-    if (!currentLocation) {
-      try {
-        alert("To calculate a route, the map needs your current location. Please allow access when prompted by your browser.");
-        const location = await requestUserLocation();
-        setUserLocation(location); // Save for future use
-        currentLocation = location;
-      } catch (error) {
-        if (error.code === 1) { // 1: PERMISSION_DENIED
-          alert("Location permission was denied. To use navigation, please enable it in your browser's site settings and refresh the page.");
-        } else {
-          alert(`Could not get your location. Error: ${error.message}`);
-        }
-        return; // Stop if we can't get the location
-      }
-    }
-    
-    // Proceed with directions if we have a location
-    if (!map || !currentLocation) return;
-    setDirections(null); // Clear previous routes
+  const handleNavigation = useCallback((destination) => {
+    if (!userLocation) { alert("Could not get your current location. Please enable location services in your browser."); return; }
+    if (!map) return;
+    setDirections(null);
     const directionsService = new window.google.maps.DirectionsService();
     directionsService.route({
-      origin: currentLocation,
+      origin: userLocation,
       destination: destination,
       travelMode: window.google.maps.TravelMode.DRIVING,
     }, (result, status) => {
-      if (status === window.google.maps.DirectionsStatus.OK) {
-        setDirections(result);
-        setActivePolygonId(null); // Close InfoWindow after starting navigation
-        setActivePolygon(null);
-      } else {
-        console.error(`Error fetching directions: ${status}`);
-        alert("Could not calculate a route. The destination may be unreachable.");
-      }
+      if (status === window.google.maps.DirectionsStatus.OK) { setDirections(result); }
+      else { console.error(`Error fetching directions: ${status}`); alert("Could not calculate a route. The destination may be unreachable."); }
     });
-  }, [userLocation, map, requestUserLocation]);
+  }, [userLocation, map]);
 
   const onPolygonComplete = useCallback((newPolygon) => {
     const name = window.prompt("Enter a name for this area:", "Unnamed Area");
@@ -158,7 +107,6 @@ function App() {
       return updated;
     });
     setActivePolygonId(null);
-    setActivePolygon(null);
   }, []);
 
   const getPolygonCenter = (paths) => {
@@ -175,7 +123,6 @@ function App() {
       map.panTo(center);
       map.setZoom(18);
       setActivePolygonId(polygonId);
-      setActivePolygon(polygon); // Set this as well for the floating button
     }
   }, [map, polygons]);
 
@@ -184,9 +131,9 @@ function App() {
   if (loadError) return <div>Error loading maps. Check API Key and ensure all 3 APIs are enabled.</div>;
   if (!isLoaded) return <div className="loading-text">Loading Map...</div>;
 
-  // --- RENDER ---
   return (
     <div className="app-container">
+      {console.log(isSidebarOpen)}
       <div className={`sidebar ${isSidebarOpen ? 'open' : ''}`} style={{ display: isSidebarOpen ? "block" : "none" }}>
         <Sidebar polygons={polygons} searchTerm={searchTerm} onSearchChange={setSearchTerm} onResultClick={handleSearchResultClick} onClose={() => setIsSidebarOpen(false)} />
       </div>
@@ -195,7 +142,7 @@ function App() {
         <header className="admin-panel">
           <h1>Location Map Editor</h1>
           <div className="admin-controls">
-            {directions && <button className="clear-all-btn" onClick={() => setDirections(null)}>Clear Route</button>}
+            {directions && <button onClick={() => setDirections(null)}>Clear Route</button>}
             {isAdminMode && <button className="clear-all-btn" onClick={() => {
               if (window.confirm("This will delete all areas. Are you sure?")) {
                 setPolygons([]);
@@ -206,6 +153,7 @@ function App() {
           </div>
         </header>
         <main className="map-container">
+
           <GoogleMap
             mapContainerStyle={MAP_CONTAINER_STYLE}
             center={mapCenter}
@@ -221,26 +169,33 @@ function App() {
               <React.Fragment key={polygon.id}>
                 <Polygon
                   paths={polygon.paths}
-                  onClick={() => { setActivePolygonId(polygon.id); setActivePolygon(polygon); }}
+                  onClick={() => setActivePolygonId(polygon.id)}
                   options={{ fillColor: POLYGON_COLORS[index % POLYGON_COLORS.length], strokeColor: POLYGON_COLORS[index % POLYGON_COLORS.length], fillOpacity: 0.4, strokeWeight: 2, clickable: true }}
                 />
+
                 {activePolygonId === polygon.id && (
                   <InfoWindow
                     position={getPolygonCenter(polygon.paths)}
-                    onCloseClick={() => { setActivePolygonId(null); setActivePolygon(null); }}
+                    onCloseClick={() => setActivePolygonId(null)}
+                    // --- FIX #1: Add maxWidth to ensure it fits on mobile ---
+                    options={{ maxWidth: 280 }}
                   >
                     <div>
                       <h3 style={{ margin: 0 }}>{polygon.name}</h3>
                       {polygon.description && <p style={{ margin: '5px 0' }}>{polygon.description}</p>}
+
+                      {/* --- FIX #2: Wrap buttons in the new flex container --- */}
                       <div className="info-window-buttons">
                         {isAdminMode && (
                           <button className="delete-button" onClick={() => handleDeletePolygon(polygon.id)}>
                             Delete
                           </button>
                         )}
-                        <button className="navigate-button" onClick={() => handleNavigation(getPolygonCenter(polygon.paths))}>
-                          Navigate
-                        </button>
+                        {userLocation && (
+                          <button className="navigate-button" onClick={() => handleNavigation(getPolygonCenter(polygon.paths))}>
+                            Navigate
+                          </button>
+                        )}
                       </div>
                     </div>
                   </InfoWindow>
@@ -255,13 +210,6 @@ function App() {
             }} />}
           </GoogleMap>
         </main>
-        {activePolygon && (
-          <div className="floating-button-container">
-            <button className='btn' onClick={() => handleNavigation(getPolygonCenter(activePolygon.paths))}>
-              Navigate to {activePolygon.name}
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );

@@ -261,28 +261,27 @@
 
 /* --- InfoWindow Buttons --- */
 
-/* The new container for stacked buttons */
+/* NEW: A flex container to hold the buttons */
 .info-window-buttons {
   display: flex;
-  flex-direction: column; /* KEY FIX: Stack the buttons vertically */
-  gap: 8px; /* Creates vertical space between them */
+  gap: 10px; /* Creates space between the buttons */
   margin-top: 12px;
 }
 
-/* MODIFIED: Styles for the now-stacked buttons */
+/* MODIFIED: Generic styles for BOTH buttons inside the container */
 .info-window-buttons button {
-  width: 100%; /* Make each button take the full width of the container */
-  padding: 10px 5px; /* A bit more vertical padding for easier tapping */
+  flex: 1; /* This makes both buttons share the space equally */
+  padding: 8px 5px; /* More padding, less horizontal space */
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 1em; /* Keep font readable */
+  font-size: 0.9em;
   font-weight: bold;
   text-align: center;
   transition: background-color 0.2s;
 }
 
-/* Specific colors for each button (no change here) */
+/* Specific colors for each button */
 .info-window-buttons .delete-button {
   background-color: #ff4d4d;
   color: white;
@@ -297,61 +296,4 @@
 }
 .info-window-buttons .navigate-button:hover {
   background-color: #0056b3;
-}
-
-/* --- Container for the floating button --- */
-.floating-button-container {
-  /* Positioning */
-  position: fixed; /* This is the key! */
-  bottom: 0; /* Stick it to the bottom */
-  left: 0; /* Align to the left edge */
-  width: 100%; /* Make it span the full width */
-  z-index: 1000; /* Ensure it's on top of other content */
-
-  /* Layout for the button(s) inside */
-  display: flex;
-  justify-content: center; /* Center the button horizontally */
-
-  /* Spacing */
-  padding-bottom: 1rem; /* Give it some breathing room from the edge */
-
-  /* This makes sure you can click through the container's empty space */
-  pointer-events: none;
-}
-
-/* This re-enables clicks for the button itself */
-.floating-button-container .btn {
-  pointer-events: auto;
-}
-
-/* --- A Modern Button Style (from before) --- */
-.btn {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 12px 24px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  width: 100%;
-  margin: 0 1rem;
-}
-
-.btn:hover {
-  background-color: #0056b3;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
-}
-
-.btn:active {
-  transform: translateY(1px);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.btn:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.4);
 }
