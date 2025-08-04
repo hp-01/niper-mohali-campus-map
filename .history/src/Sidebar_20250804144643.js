@@ -1,13 +1,5 @@
+import React from 'react';
 import './Sidebar.css';
-
-async function copyTextToClipboard(text) {
-  try {
-    await navigator.clipboard.writeText(text);
-    console.log('Text copied to clipboard successfully!');
-  } catch (err) {
-    console.error('Failed to copy text: ', err);
-  }
-}
 
 function Sidebar({ polygons, onSearchChange, onResultClick, searchTerm, onClose }) {
 
@@ -17,7 +9,7 @@ function Sidebar({ polygons, onSearchChange, onResultClick, searchTerm, onClose 
 
   const handleItemClick = (polygonId) => {
     onResultClick(polygonId);
-    if (window.innerWidth < 800) {
+    if (onClose) {
       onClose();
     }
   };
@@ -47,7 +39,7 @@ function Sidebar({ polygons, onSearchChange, onResultClick, searchTerm, onClose 
         ) : (
           <p className="no-results">No locations found.</p>
         )}
-        <li><button className='btn' style={{ background: "#007bff", width: "100%", borderRadius: 0 }} onClick={() => copyTextToClipboard(localStorage.getItem('niper-mapped-areas'))}>Copy All</button></li>
+        <li><button className='btn' style={{ background: "#007bff", width: "100%", borderRadius: 0 }} onClick={() => navigator.clipboard.write(localStorage.getItem('niper-mapped-areas'))}>Copy All</button></li>
       </ul>
     </aside>
   );

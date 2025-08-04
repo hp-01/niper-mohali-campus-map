@@ -50,6 +50,12 @@ function App() {
     }
   }, []);
 
+  useEffect(() => {
+    const handleResize = () => setIsSidebarOpen(window.innerWidth > 768);
+    window.addEventListener('resize', handleResize); handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const { isLoaded, loadError } = useJsApiLoader({ googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY, libraries: MAP_LIBRARIES });
 
   const userLocationIcon = useMemo(() => {

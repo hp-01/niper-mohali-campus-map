@@ -10,16 +10,12 @@ async function copyTextToClipboard(text) {
 }
 
 function Sidebar({ polygons, onSearchChange, onResultClick, searchTerm, onClose }) {
-
   const filteredPolygons = polygons.filter(polygon =>
     polygon.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleItemClick = (polygonId) => {
     onResultClick(polygonId);
-    if (window.innerWidth < 800) {
-      onClose();
-    }
   };
 
   return (

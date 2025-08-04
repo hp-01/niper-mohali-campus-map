@@ -17,7 +17,8 @@ function Sidebar({ polygons, onSearchChange, onResultClick, searchTerm, onClose 
 
   const handleItemClick = (polygonId) => {
     onResultClick(polygonId);
-    if (window.innerWidth < 800) {
+    console.log(window.innerWidth < 400);
+    if (onClose) {
       onClose();
     }
   };
